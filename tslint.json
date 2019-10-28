@@ -1,6 +1,9 @@
 {
   "extends": "tslint:recommended",
   "rules": {
+	"space-before-function-paren": [true, "never"],
+	"indent": [true, "tabs", 4],
+	"no-empty-interface": true,
     "array-type": false,
     "arrow-parens": false,
     "deprecation": {
