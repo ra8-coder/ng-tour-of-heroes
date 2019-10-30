@@ -30,7 +30,7 @@ export class HeroService {
 	/* GET: 서버에서 히어로 목록 가져오기 */
 	getHeroes(): Observable<Hero[]> {
 		return this.http.get<Hero[]>(this.heroesUrl).pipe(
-				tap(_ => this.log('getched heroes')),
+				tap(_ => this.log('fetched heroes')),
 				catchError( this.handleError<Hero[]>('getHeroes', []))
 			);
 	}
@@ -60,6 +60,27 @@ export class HeroService {
 		);
 	}
 
+	/* DELETE :  서버에서 히어로를 제거합니다. */
+	deleteHero (hero: Hero | number): Observable<Hero> {
+		const id = typeof hero === 'number' ? hero : hero.id;
+		const url = `${this.heroesUrl}/${id}`;
+
+		return this.http.delete<Hero>(url, httpOptions).pipe(
+			tap(_ => this.log(`deleted hero id=${id}`)),
+			catchError(this.handleError<Hero>('deleteHero'))
+		);
+	}
+
+	searchHeroes(term: string): Observable<Hero[]> {
+		if (!term.trim()) {
+			return of([]);
+		}
+		return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`).pipe(
+			tap(_ => this.log(`found heroes matching "${term}`)),
+			catchError(this.handleError<Hero[]>('seachHeroes', []))
+		);
+	}
+
 	/*
 	* HTTP 요청이 실패한 경우를 처리합니다.
 	* 애플리케이션 로직 흐름은 그대로 유지됩니다.
@@ -79,5 +100,7 @@ export class HeroService {
 		return of(result as T);
 		};
 	}
+
+
 
 }
